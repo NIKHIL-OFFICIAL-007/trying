@@ -1,0 +1,38 @@
+-- Create users table
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('buyer', 'seller', 'support', 'admin') DEFAULT 'buyer',
+    role_status ENUM('approved', 'pending', 'rejected') DEFAULT 'approved',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Add indexes for better performance
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_users_role ON users(role);
+CREATE INDEX idx_users_role_status ON users(role_status);
+
+-- Create seller_applications table
+CREATE TABLE seller_applications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    phone VARCHAR(50) NOT NULL,
+    business_address TEXT NOT NULL,
+    website VARCHAR(255),
+    business_license VARCHAR(255),
+    role_reason TEXT NOT NULL,
+    additional_info TEXT,
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Add indexes for better performance
+CREATE INDEX idx_seller_applications_user_id ON seller_applications(user_id);
+CREATE INDEX idx_seller_applications_status ON seller_applications(status);
+CREATE INDEX idx_seller_applications_created_at ON seller_applications(created_at);
